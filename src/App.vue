@@ -1,17 +1,30 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
+    <img alt="Vue logo" src="./assets/logo.png" />
+    <div v-if="test">DDD</div>
     <HelloWorld msg="Welcome to Your Vue.js App"/>
   </div>
 </template>
 
 <script>
+/* eslint-disable no-console */
 import HelloWorld from './components/HelloWorld.vue'
 
 export default {
   name: 'app',
   components: {
     HelloWorld
+  },
+  data () {
+    return {
+      test: false
+    }
+  },
+  mounted () {
+    console.log('Hello Vue!')
+    setTimeout(() => {
+      this.test = true
+    }, 500)
   }
 }
 </script>
