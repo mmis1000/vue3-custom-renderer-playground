@@ -6,12 +6,29 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title>vue-next</title>
+    <style>
+      #app-wrap {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+      }
+      #app {
+        width: 100%;
+        height: 100%;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+    </style>
   </head>
   <body>
     <noscript>
       <strong>We're sorry but vue-next doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
-    <div id="app"></div>
+    <div id="app-wrap">
+      <canvas width="480" height="360" id="app"></canvas>
+    </div>
     <!-- built files will be auto injected -->
   </body>
 </html>

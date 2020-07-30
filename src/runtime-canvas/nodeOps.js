@@ -4,12 +4,7 @@ const TYPE = {
     COMMENT: /** @type {'comment'} */('comment')
 }
 export class CustomNode {
-    /**
-     * 
-     * @param {(typeof TYPE)[string]} type 
-     */
-    constructor (type) {
-        this.type = type
+    constructor () {
         /**
          * @type {CustomElement|null}
          */
@@ -44,6 +39,12 @@ export class CustomNode {
     get [Symbol.toStringTag] () {
         return 'Node'
     }
+    get innerHTML () {
+        throw new Error('not implemented')
+    }
+    get outerHTML () {
+        throw new Error('not implemented')
+    }
 }
 export class CustomText extends CustomNode {
     /**
@@ -51,7 +52,8 @@ export class CustomText extends CustomNode {
      * @param {string} text 
      */
     constructor (text) {
-        super(TYPE.TEXT)
+        super()
+        this.type = TYPE.TEXT
         this.nodeValue = text
     }
     cloneNode () {
@@ -68,6 +70,12 @@ export class CustomText extends CustomNode {
     get [Symbol.toStringTag] () {
         return 'Text'
     }
+    get innerHTML () {
+        throw new Error('not implemented')
+    }
+    get outerHTML () {
+        return this.textContent
+    }
 }
 export class CustomComment extends CustomNode {
     /**
@@ -75,7 +83,8 @@ export class CustomComment extends CustomNode {
      * @param {string} text 
      */
     constructor (text) {
-        super(TYPE.COMMENT)
+        super()
+        this.type = TYPE.COMMENT
         this.text = text
     }
     cloneNode () {
@@ -92,13 +101,20 @@ export class CustomComment extends CustomNode {
     get [Symbol.toStringTag] () {
         return 'Comment'
     }
+    get innerHTML () {
+        throw new Error('not implemented')
+    }
+    get outerHTML () {
+        return `<!--{this.text}-->`
+    }
 }
 export class CustomElement extends CustomNode {
     /**
      * @param {string} tag 
      */
     constructor (tag) {
-        super(TYPE.ELEMENT)
+        super()
+        this.type = TYPE.ELEMENT
         this.tag = tag
         /**
          * @type {CustomNode[]}
@@ -186,7 +202,13 @@ export class CustomElement extends CustomNode {
     }
 
     get innerHTML () {
-        throw new Error('not implemented')
+        const children = this.children.map(i => i.outerHTML).join('')
+        return children
+    }
+
+    get outerHTML () {
+        const attrs = Object.keys(this.attributes).map(k => `${k}="${encodeURIComponent(this.attributes[k])}"`).join(' ')
+        return `<${this.tag}${attrs ? ' ' + attrs : ''}>${this.innerHTML}</${this.tag}>`
     }
     get [Symbol.toStringTag] () {
         return 'Element'
@@ -199,7 +221,7 @@ const logArgumentsWrapper = obj => {
         wrapped[key] = (...args) => {
             const res = obj[key](...args)
             // eslint-disable-next-line no-console
-            console.log([key, ...args, 'ANSWER', res, new Error()])
+            // console.log([key, ...args, 'ANSWER', res, new Error()])
             return res
         }
     }
